@@ -475,7 +475,7 @@ def signup1():
             st.error("Passwords do not match.")
 
 if st.session_state.page == 'home_page':
-    st.set_page_config(page_title="Healthcare App", layout="centered")
+    st.set_page_config(page_title="Symptoms analyser and diesase predictor App", layout="centered")
     
     st.markdown("""
     <style>
@@ -541,7 +541,7 @@ if st.session_state.page == 'home_page':
         }
     </style>
     """, unsafe_allow_html=True)
-    st.markdown('<div class="header-title">Welcome to Your Healthcare Tracker!</div>', unsafe_allow_html=True)
+    st.markdown('<div class="header-title">Welcome to Symptoms Analyzer and Disease Predictor!</div>', unsafe_allow_html=True)
     st.markdown(
     """
     <hr style="border: 1px solid red; margin: 20px 0;">

@@ -24,7 +24,7 @@ if 'user_name' not in st.session_state:
     st.session_state.user_name = None
 if 'predicted_dises' not in st.session_state:
     st.session_state.predicted_dises = None
-# Utility functions
+
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
@@ -36,7 +36,7 @@ def login(user_name, password):
     hashed_password = hash_password(password)  # Hash the input password once
     c.execute("""SELECT * FROM users WHERE username = ? AND password = ?""", (user_name, hashed_password))
     user = c.fetchone()
-    conn.close()  # Close the connection
+    conn.close() 
     return user is not None
 
 
@@ -51,11 +51,11 @@ def signup(user_name, password):
     except sq.IntegrityError:
         return False
     finally:
-        conn.close()  # Close the connection properly
+        conn.close()
 
 def save_profile(user_name, full_name, age, gender, height, weight):
     try:
-        with sq.connect('profiles.db', timeout=10) as conn:  # Using 'with' to automatically close connection
+        with sq.connect('profiles.db', timeout=10) as conn:
             cursor = conn.cursor()
             cursor.execute("""
                 INSERT INTO profiles (user_name, full_name, age, gender, height, weight)
@@ -99,7 +99,7 @@ def analyzer():
         mlb = joblib.load("datasets/symptoms_encoder.pkl")
         return model, mlb
 
-    # Predict Disease
+
     def predict_disease(model, mlb, symptoms):
         input_data = mlb.transform([symptoms])
         probabilities = model.predict_proba(input_data)[0]
@@ -107,22 +107,20 @@ def analyzer():
         predicted_disease = model.classes_[predicted_disease_idx]
         return predicted_disease, probabilities
 
-    # Streamlit app
+
 
     st.markdown("<h1 style='text-align: center; color: #4CAF50;'>Symptom Analyzer & Disease Predictor</h1>", unsafe_allow_html=True)
 
-    # Load the dataset
+
     file_path = "datasets/Diseases_Symptoms.csv"
     dataset = pd.read_csv(file_path)
     dataset['Symptoms_list'] = dataset['Symptoms'].apply(lambda x: x.split(', '))
 
-    # Load the trained model and encoder
+
     model, mlb = load_model_and_encoder()
 
-    # List of all symptoms
     all_symptoms = mlb.classes_
 
-    # Sidebar instructions
     st.sidebar.markdown("### How to Use")
     st.sidebar.write("""
     1. Select symptoms from the dropdown.
@@ -131,7 +129,6 @@ def analyzer():
     """)
     st.sidebar.divider()
     st.sidebar.button("Back", on_click=lambda: setattr(st.session_state, 'page', 'mainn_page'))
-    # User input: Multiple Select for symptoms
     selected_symptoms = st.multiselect(
         "Select your symptoms:",
         all_symptoms,
@@ -162,20 +159,16 @@ def analyzer():
 
     if st.button("Predict"):
         if selected_symptoms:
-            # Predict the disease
             predicted_disease, probabilities = predict_disease(model, mlb, selected_symptoms)
             st.session_state.predicted_dises= predicted_disease
-            # Display the most probable disease
             st.markdown(f"<h2 style='color: #FF5722;'>🩺 Most Predicted Disease: {predicted_disease}</h2>", unsafe_allow_html=True)
 
-            # Retrieve probabilities for all diseases
             disease_probabilities = pd.DataFrame({
                 "Disease": model.classes_,
                 "Probability": probabilities
             }).sort_values(by="Probability", ascending=False)
 
-            # Display bar chart for top N diseases
-            top_n = 5  # Show top 5 diseases
+            top_n = 5
             top_diseases = disease_probabilities.head(top_n)
 
             st.subheader("Top Predicted Diseases and Probabilities")
@@ -190,7 +183,6 @@ def analyzer():
             )
             st.plotly_chart(fig, use_container_width=True)
 
-            # Display treatment recommendation
             treatment = dataset.loc[dataset['Name'] == predicted_disease, 'Treatments'].values
             if treatment.any():
                 st.markdown(f"<h3 style='color: #4CAF50;'>💊 Recommended Treatment: {treatment[0]}</h3>", unsafe_allow_html=True)
@@ -202,11 +194,9 @@ def analyzer():
     return True
 
 def doctor_rec():
-    # Load the dataset
-    file_path = 'datasets/Disease precaution.csv'  # Update with the correct path if needed
+    file_path = 'datasets/Disease precaution.csv' 
     disease_precautions = pd.read_csv(file_path)
 
-    # Expanded doctor data
     doctors = [
         {"name": "Dr. Suman Thapa", "specialty": "General Medicine", "email": "suman.thapa@gmail.com", "phone": "9801234567"},
         {"name": "Dr. Anju Shrestha", "specialty": "Cardiology", "email": "anju.shrestha@gmail.com", "phone": "9807654321"},
@@ -225,7 +215,6 @@ def doctor_rec():
         {"name": "Dr. Sarita Pokharel", "specialty": "ENT", "email": "sarita.pokharel@gmail.com", "phone": "9801617181"}
     ]
 
-    # Mock hospital data
     hospitals = [
         {"name": "Norvic International Hospital", "address": "Thapathali, Kathmandu", "phone": "+977 1 4252922"},
         {"name": "Grande International Hospital", "address": "Dhapasi, Kathmandu", "phone": "+977 1 4381047"},
@@ -237,15 +226,12 @@ def doctor_rec():
         {"name": "KIST Medical College", "address": "Imadol, Lalitpur", "phone": "+977 1 5201681"}
     ]
 
-    # Function to display recommendations and suggestions
     def recommendations_and_suggestions():
         st.title("🧬 Recommendations and Suggestions")
 
-        # Ask user to input the disease
         disease_input = st.session_state.predicted_dises
         
         if st.button("Get Recommendations"):
-            #show recommended doctors
                 st.subheader("Recommended Doctors")
                 st.write(f"Specialized Doctors for {disease_input.capitalize()}:")
                 selected_doctors = random.sample(doctors, k=min(3, 5))
@@ -258,7 +244,6 @@ def doctor_rec():
                     Phone: {doc['phone']}  
                     """)
 
-                # Show nearby hospitals
                 st.subheader("Nearby Hospitals")
                 st.write("Hospitals you can visit:")
                 for hospital in hospitals:
@@ -268,7 +253,6 @@ def doctor_rec():
                     Phone: {hospital['phone']}  
                     """)
                 
-                # Additional Call-to-action
                 st.markdown("""
                 ---
                 For further guidance, consult your nearest healthcare professional.
@@ -389,17 +373,14 @@ def main_page():
     with col1:
         
 
-# Example usage in the dashboard
 
         quote = get_random_quote()
         st.markdown(f"## 🌟 Health Tip of the Day:\n> ### {quote}")
     
     with col3:
         st.subheader("User Info")
-        # Fetch user data
         user_info = fetch_user_info(st.session_state.user_name)
         if user_info:
-            # Display user data
             for key, value in user_info.items():
                 st.markdown(f"#### {key}: {value}")
         else:
@@ -425,17 +406,14 @@ def login1():
             else:
                 st.error("Invalid username or password.")
 def history_tracker():
-    # App Title
     st.sidebar.markdown("### Navigations")
     st.sidebar.button("Back", on_click=lambda: setattr(st.session_state, 'page', 'mainn_page'))
     st.sidebar.divider()
     st.title(f"Trend Analysis of {(st.session_state.user_name).upper()}📈!!")
 
-    # Sidebar: User Input Section
     st.sidebar.header("Enter Your today's Health Data")
     today = datetime.today()
 
-    # Input Widgets
     weight = st.sidebar.number_input("Weight (kg)", min_value=30.0, max_value=200.0, step=0.1)
     bp_systolic = st.sidebar.number_input("Systolic BP (mmHg)", min_value=80, max_value=200, step=1)
     bp_diastolic = st.sidebar.number_input("Diastolic BP (mmHg)", min_value=40, max_value=120, step=1)
@@ -446,28 +424,23 @@ def history_tracker():
         st.sidebar.success("Data Submitted Successfully!")
 
     data = fetch_health_data(st.session_state.user_name)
-    # Fetch and display data
     if data:
         df = pd.DataFrame(data, columns=["ID", "User Name", "Date", "Weight", "Systolic BP", "Diastolic BP", "Glucose", "Exercise Time"])
         df["Date"] = pd.to_datetime(df["Date"])
         st.dataframe(df)
         
-        # Plotting Trends with Dual Y-Axis
         st.subheader("Trends Over Time (Dual Y-Axis)")
         fig, ax1 = plt.subplots(figsize=(12, 6))
         
-        ax2 = ax1.twinx()  # Create a twin y-axis
-        # Left Y-Axis (Weight and Glucose)
+        ax2 = ax1.twinx()
         ax1.plot(df["Date"], df["Weight"], marker="o", label="Weight (kg)", color="blue", linewidth=2)
         ax1.plot(df["Date"], df["Glucose"], marker="o", label="Glucose Level (mg/dL)", color="red", linewidth=2)
         ax1.set_ylabel("Weight (kg) / Glucose Level (mg/dL)", fontsize=12)
         
-        # Right Y-Axis (Systolic and Diastolic BP)
         ax2.plot(df["Date"], df["Systolic BP"], marker="o", label="Systolic BP (mmHg)", color="green", linewidth=2, linestyle="--")
         ax2.plot(df["Date"], df["Diastolic BP"], marker="o", label="Diastolic BP (mmHg)", color="orange", linewidth=2, linestyle="--")
         ax2.set_ylabel("Blood Pressure (mmHg)", fontsize=12)
         
-        # Titles and Legends
         ax1.set_title("Trends of Health Metrics", fontsize=16)
         ax1.set_xlabel("Date", fontsize=12)
         ax1.legend(loc="upper left")
@@ -501,13 +474,9 @@ def signup1():
         else:
             st.error("Passwords do not match.")
 
-# Main page logic
-# Main page logic
 if st.session_state.page == 'home_page':
-    # Set page configuration
     st.set_page_config(page_title="Healthcare App", layout="centered")
     
-    # Custom CSS for styling
     st.markdown("""
     <style>
         body {
@@ -586,7 +555,6 @@ if st.session_state.page == 'home_page':
 
     st.markdown('<div class="text">Manage your health with ease, track symptoms, and make informed decisions with insightful analytics.</div>', unsafe_allow_html=True)
 
-    # Feature boxes
     st.markdown("""
     <div class="feature-box">
         <div class="feature">
@@ -604,7 +572,6 @@ if st.session_state.page == 'home_page':
     </div>
     """, unsafe_allow_html=True)
 
-    # Call to action
     
     st.sidebar.markdown("### Navigations")
     st.sidebar.divider()

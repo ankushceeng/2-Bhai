@@ -23,8 +23,8 @@ Welcome to the *Healthcare Tracker*, a Streamlit-powered web application designe
 
 1. Clone the repository:
    bash
-   git clone https://github.com/yourusername/healthcare-tracker.git
-   cd healthcare-tracker
+   git clone https://github.com/ankushceeng/2-Bhai.git
+   cd 2-Bhai
    
 2. Install the required dependencies:
    bash

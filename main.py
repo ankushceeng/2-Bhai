@@ -137,7 +137,6 @@ def analyzer():
         all_symptoms,
         help="Choose symptoms that you are experiencing from the list."
     )
-    print(len(all_symptoms))
     for i in  all_symptoms:
         if i in selected_symptoms:
             st.slider(f"Symptoms Severity of {i}", min_value=0, max_value=100)

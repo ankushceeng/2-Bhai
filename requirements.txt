@@ -1,0 +1,10 @@
+streamlit
+sqlite3
+hashlib
+pandas
+numpy
+scikit-learn 
+matplotlib
+databse
+joblib
+ploty

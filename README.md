@@ -43,16 +43,6 @@ Welcome to the *Healthcare Tracker*, a Streamlit-powered web application designe
 4. *View Trends*: Access detailed graphs showing trends in your health metrics over time.
 5. *Update Profile*: Modify your personal details for accurate recommendations.
 
-## Screenshots
-
-### Dashboard
-![Dashboard](assets/dashboard_screenshot.png)
-
-### Health Trends
-![Trends](assets/trends_screenshot.png)
-
-### Symptom Analyzer
-![Analyzer](assets/analyzer_screenshot.png)
 
 ## Database Structure
 

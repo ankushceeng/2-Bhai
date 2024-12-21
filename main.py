@@ -76,7 +76,7 @@ def personal_data():
         full_name = st.text_input("Full Name")
         age = st.number_input("Age", min_value=1, step=1)
         gender = st.radio("Gender", ["Male", "Female", "Other"])
-        height = st.number_input("Height (in cm)", min_value=1.0)
+        height = st.number_input("Height (in m)", min_value=1.0)
         weight = st.number_input("Weight (in kg)", min_value=1.0)
         
         submitted = st.form_submit_button("Save")
@@ -326,7 +326,7 @@ def update_profile():
             full_name = st.text_input("Full Name", value=full_name)
             age = st.number_input("Age", min_value=1, step=1, value=age)
             gender = st.radio("Gender", ["Male", "Female", "Other"], index=["Male", "Female", "Other"].index(gender))
-            height = st.number_input("Height (in meters)", min_value=1.0, step=0.1, value=height)
+            height = st.number_input("Height (in m)", min_value=1.0, step=0.1, value=height)
             weight = st.number_input("Weight (in kg)", min_value=1.0, step=0.1, value=weight)
             
             submitted = st.form_submit_button("Update")

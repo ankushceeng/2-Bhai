@@ -87,4 +87,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
-Feel free to reach out with feedback, feature requests, or bug reports. Happy health tracking! 🚀
+Feel free to reach out with feedback, feature requests, or bug reports! 🚀
